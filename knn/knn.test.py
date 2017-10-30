@@ -1,4 +1,6 @@
 import csv
+
+import sys
 from sklearn.neighbors import KNeighborsClassifier
 
 
@@ -46,4 +48,4 @@ if __name__ == "__main__":
 
     print(neigh.predict([[5.1, 3.5, 1.4, 0.2]]))
 
-    print(neigh.predict_proba([[0.9]]))
+#    print(neigh.predict_proba(['Iris-setosa']))
