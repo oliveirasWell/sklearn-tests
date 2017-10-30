@@ -12,12 +12,12 @@ def main():
         {'C': [1, 10, 100, 1000], 'gamma': [0.001, 0.0001], 'kernel': ['rbf']},
     ]
 
-    knn = SVC()
+    svm = SVC()
 
     for dataset in data_sets:
         print('----------------------------------------------------')
         print('Dataset:' + dataset)
-        SearchAnalyzer(dataset, param_grid, knn, allow_random=False).getMelhoresResultados()
+        SearchAnalyzer(dataset, param_grid, svm, allow_random=False).getMelhoresResultados()
         print('----------------------------------------------------')
 
 
