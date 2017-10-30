@@ -1,10 +1,10 @@
 import csv
 from sklearn.neighbors import KNeighborsClassifier
 
-class DataCollector:
 
+class DataCollector:
     def __init__(self):
-        print ("Started")
+        print("Started")
 
     def getEntrada(self, nome_ficheiro):
         vetorEntrada = []
@@ -23,22 +23,22 @@ class DataCollector:
         return self.getVetorXySeparado(vetorEntrada)
 
     def getVetorXySeparado(self, vetorEntrada):
-            x = []
-            y = []
+        x = []
+        y = []
 
-            for linha in vetorEntrada:
-                linhaXAux = []
-                for coluna in linha[:-1]:
-                    clounaTemp = coluna
-                    linhaXAux.append(clounaTemp)
-                x.append(linhaXAux)
-                y.append(linha[-1])
-            return x, y
+        for linha in vetorEntrada:
+            linhaXAux = []
+            for coluna in linha[:-1]:
+                clounaTemp = coluna
+                linhaXAux.append(clounaTemp)
+            x.append(linhaXAux)
+            y.append(linha[-1])
+        return x, y
+
 
 if __name__ == "__main__":
-
     data = DataCollector()
-    X, y= data.getEntrada('datasets/iris.data')
+    X, y = data.getEntrada('datasets/iris.data')
 
     neigh = KNeighborsClassifier(n_neighbors=3)
 
