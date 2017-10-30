@@ -1,16 +1,16 @@
 import csv
-
 import sys
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.model_selection import RandomizedSearchCV
 from sklearn.model_selection import GridSearchCV
 
 
+#################################################################################################################################
 class DataCollector:
     def __init__(self):
         print("Started")
 
-    def getEntrada(self, nome_ficheiro):
+    def lerCsv(self, nome_ficheiro):
         vetor_entrada = []
 
         with open(nome_ficheiro, 'r') as ficheiro:
@@ -41,52 +41,59 @@ class DataCollector:
         return x, y
 
 
-def main():
-    data = DataCollector()
-    data_sets = ['iris', 'ionosphere']
+#################################################################################################################################
+class SearchAnalyzer:
+    def __init__(self, dataset, param_grid_in, model_selection):
+        self.dataset = dataset
 
-    k_range = list(range(1, 31))
-    weight_options = ['uniform', 'distance']
-    param_grid_in = dict(n_neighbors=k_range, weights=weight_options)
+        data = DataCollector()
+        self.X, self.y = data.lerCsv(dataset)
 
-    print('----------------------------------------------------')
-    for dataset in data_sets:
+        self.search_methods = [('Grid', GridSearchCV(model_selection, param_grid_in, cv=10, scoring='accuracy')),
+                               ('Random',
+                                RandomizedSearchCV(model_selection, param_grid_in, cv=10,
+                                                   scoring='accuracy', n_iter=30,
+                                                   random_state=5))]
 
-        print('Dataset:' + dataset)
-
-        X, y = data.getEntrada('datasets/' + dataset + '.data')
-
-        knn = KNeighborsClassifier(n_neighbors=10, weights='distance', algorithm='ball_tree')
-
-        search_methods = [('Grid', GridSearchCV(knn, param_grid_in, cv=10, scoring='accuracy')),
-                          ('Random',
-                           RandomizedSearchCV(knn, param_grid_in, cv=10, scoring='accuracy', n_iter=30, random_state=5))]
-
-        for name, search_method in search_methods:
+    def getMelhoresResultados(self):
+        for name, search_method in self.search_methods:
             print('----------------------------------------------------')
-            print('Search method: ' + name)
-            search_method.fit(X, y)
-            print("Best score:")
+            print('Metodo de busca: ' + name)
+            search_method.fit(self.X, self.y)
+
+            print("Melhor resultado:")
             print(search_method.best_score_)
             print()
 
-            print("Best params:")
+            print("Melhor parametros:")
             print(search_method.best_params_)
             print()
 
-            # print_scores(search_method)
+            self.printResultados(search_method)
+
+    def printResultados(self, search_method):
+        print("Lista de scores:")
+        means = search_method.cv_results_['mean_test_score']
+        stds = search_method.cv_results_['std_test_score']
+        for mean, std, params in zip(means, stds, search_method.cv_results_['params']):
+            print("%0.6f (+/-%0.03f) for %r" % (mean, std * 2, params))
+        print('----------------------------------------------------')
+        print()
 
 
-def print_scores(search_method):
-    print("Lista de scores:")
-    means = search_method.cv_results_['mean_test_score']
-    stds = search_method.cv_results_['std_test_score']
-    for mean, std, params in zip(means, stds, search_method.cv_results_['params']):
-        print("%0.6f (+/-%0.03f) for %r"
-              % (mean, std * 2, params))
-    print('----------------------------------------------------')
-    print()
+#################################################################################################################################
+def main():
+    data_sets = ['datasets/iris.data', 'datasets/ionosphere.data']
+    param_grid_in = dict(n_neighbors=list(range(1, 31)), weights=['uniform', 'distance'])
+    knn = KNeighborsClassifier(n_neighbors=10, weights='distance')
+
+    for dataset in data_sets:
+        print('----------------------------------------------------')
+        print('Dataset:' + dataset)
+        SearchAnalyzer(dataset, param_grid_in, knn).getMelhoresResultados()
+        print('----------------------------------------------------')
 
 
+#################################################################################################################################
 if __name__ == "__main__":
     main()
