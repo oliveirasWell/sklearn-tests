@@ -50,10 +50,7 @@ class SearchAnalyzer:
         self.X, self.y = data.lerCsv(dataset)
 
         self.search_methods = [('Grid', GridSearchCV(model_selection, param_grid_in, cv=10, scoring='accuracy')),
-                               ('Random',
-                                RandomizedSearchCV(model_selection, param_grid_in, cv=10,
-                                                   scoring='accuracy', n_iter=30,
-                                                   random_state=5))]
+                               ('Random', RandomizedSearchCV(model_selection, param_grid_in, cv=10, scoring='accuracy', n_iter=30, random_state=5))]
 
     def getMelhoresResultados(self):
         for name, search_method in self.search_methods:
