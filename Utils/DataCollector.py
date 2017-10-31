@@ -9,7 +9,8 @@ class DataCollector:
     def __init__(self):
         print("Started")
 
-    def lerCsv(self, nome_ficheiro):
+    @staticmethod
+    def lerCsv(nome_ficheiro):
         vetor_entrada = []
 
         with open(nome_ficheiro, 'r') as ficheiro:
@@ -23,9 +24,10 @@ class DataCollector:
                     vetor_entrada.append(novaLinha)
             except csv.Error as e:
                 sys.exit('ficheiro %s, linha %d: %s' % (nome_ficheiro, reader.line_num, e))
-        return self.getVetorXySeparado(vetor_entrada)
+        return DataCollector.getVetorXySeparado(vetor_entrada)
 
-    def getVetorXySeparado(self, vetor_entrada):
+    @staticmethod
+    def getVetorXySeparado(vetor_entrada):
         x = []
         y = []
 

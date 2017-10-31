@@ -6,10 +6,8 @@ from Utils.DataCollector import DataCollector
 class SearchAnalyzer:
     def __init__(self, dataset, param_grid_in, model_selection, allow_random=True):
         self.dataset = dataset
-        data = DataCollector()
-        self.X, self.y = data.lerCsv(dataset)
+        self.X, self.y = DataCollector().lerCsv(dataset)
         self.allow_random = allow_random
-
         self.search_methods = [('Grid', GridSearchCV(model_selection, param_grid_in, cv=10, scoring='accuracy', n_jobs=-1)),
                                ('Random', RandomizedSearchCV(model_selection, param_grid_in, cv=10, scoring='accuracy', n_iter=30, random_state=5))]
 
@@ -31,9 +29,9 @@ class SearchAnalyzer:
             print(search_method.best_params_)
             print()
 
-            self.printResultados(search_method)
+            self.printListaResultados(search_method)
 
-    def printResultados(self, search_method):
+    def printListaResultados(self, search_method):
         print("Lista de scores:")
         means = search_method.cv_results_['mean_test_score']
         stds = search_method.cv_results_['std_test_score']
